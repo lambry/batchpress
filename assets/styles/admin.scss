@@ -1,0 +1,96 @@
+/* Variables */
+$blue: #009efd;
+$green: #2af598;
+$red: #ff5d34;
+$black: #4c4f52;
+$white: #fafafa;
+
+/* Main Styles */
+.batchpress {
+  p {
+    margin: 1rem 0;
+  }
+
+  ul {
+    list-style-type: disc;
+    margin: 1rem 1rem 3rem;
+  }
+
+  &-process {
+    display: none;
+    min-height: 80vh;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+  }
+
+  &-message {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 300px;
+    width: 300px;
+    font-size: 1.25rem;
+    background-color: $white;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    line-height: 1.4;
+    border-radius: 50%;
+    box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.05), 0 0 20px 20px rgba(0, 0, 0, 0.05), 0 0 30px 30px rgba(0, 0, 0, 0.05);
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      width: calc(100% + 16px);
+      height: calc(100% + 16px);
+      background: linear-gradient(to right, $green, $blue);
+      border-radius: 50%;
+      transition: opacity 0.25s ease;
+      animation: spinIt 2s linear infinite;
+      z-index: -1;
+    }
+  }
+
+  &-processing {
+    .batchpress-form {
+      display: none;
+    }
+    .batchpress-process {
+      display: flex;
+    }
+  }
+
+  &-done,
+  &-error {
+    .batchpress-message::before {
+      animation-play-state: paused;
+    }
+    .batchpress-stop {
+      visibility: hidden;
+    }
+  }
+
+  &-done .batchpress-message::before {
+    background: $green;
+  }
+
+  &-error .batchpress-message::before {
+    background: $red;
+  }
+}
+
+/* Animations */
+@keyframes spinIt {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

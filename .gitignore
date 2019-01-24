@@ -1,0 +1,25 @@
+# Ignored extensions
+*.diff
+*.err
+*.orig
+*.log
+*.rej
+*.swo
+*.swp
+*.vi
+*~
+
+# OS or Editor folders
+.DS_Store
+Thumbs.db
+.cache
+.vscode
+.project
+.settings
+
+# Folders to ignore
+node_modules
+cache
+.sass-cache
+.codekit-cache
+config.codekit3
