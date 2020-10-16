@@ -8,6 +8,11 @@
     <li><?php _e('A "Framework" for running batched processes.', 'batchpress'); ?></li>
     <li><?php _e('And UI for launching, monitoring and stoping batched processes.', 'batchpress'); ?></li>
   </ul>
+  <p><strong>Choose process to run</strong></p>
+  <p>
+    <label><input type="radio" name="job" value="import" checked="checked"> Import items</label><br>
+    <label><input type="radio" name="job" value="update"> Update items</label>
+  </p>
   <button type="submit" class="batchpress-button button button-primary button-large">
     <?php _e('Start', 'batchpress'); ?>
   </button>

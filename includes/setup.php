@@ -37,8 +37,8 @@ class Setup {
   public function assets($hook) {
     if ($this->page !== $hook) return;
 
-    wp_enqueue_style('batchpress-styles', BATCHPRESS_ASSETS . 'styles/admin.css', [], '0.1.0');
-    wp_enqueue_script('batchpress-scripts', BATCHPRESS_ASSETS . 'scripts/admin.min.js', ['jquery'], '0.1.0', true);
+    wp_enqueue_style('batchpress-styles', BATCHPRESS_ASSETS . 'styles/admin.css', [], BATCHPRESS_VERSION);
+    wp_enqueue_script('batchpress-scripts', BATCHPRESS_ASSETS . 'scripts/admin.js', ['jquery'], BATCHPRESS_VERSION, true);
   }
 
   /**
@@ -52,5 +52,4 @@ class Setup {
       ?>
     </div>
   <?php }
-
 }

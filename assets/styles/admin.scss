@@ -3,6 +3,7 @@ $blue: #009efd;
 $green: #2af598;
 $red: #ff5d34;
 $black: #4c4f52;
+$silver: #f1f1f1;
 $white: #fafafa;
 
 /* Main Styles */
@@ -35,7 +36,7 @@ $white: #fafafa;
     width: 300px;
     font-size: 1.25rem;
     background-color: $white;
-    margin-bottom: 2.5rem;
+    margin: 1.5rem auto 2.5rem;
     text-align: center;
     line-height: 1.4;
     border-radius: 50%;
@@ -54,12 +55,23 @@ $white: #fafafa;
       animation: spinIt 2s linear infinite;
       z-index: -1;
     }
+
+    small {
+      display: block;
+      font-size: 0.5rem;
+      background: $silver;
+      padding: 1px 3px;
+      border-radius: 3px;
+      text-transform: capitalize;
+    }
   }
 
   &-processing {
-    .batchpress-form {
+    .batchpress-form,
+    .batchpress-back {
       display: none;
     }
+
     .batchpress-process {
       display: flex;
     }
@@ -70,8 +82,13 @@ $white: #fafafa;
     .batchpress-message::before {
       animation-play-state: paused;
     }
+
     .batchpress-stop {
-      visibility: hidden;
+      display: none;
+    }
+
+    .batchpress-back {
+      display: block;
     }
   }
 

@@ -1,16 +1,19 @@
 /* Run updater */
 ;(function($) {
+  let job = null
   let ajax = null
-  const batchPress = $('.batchpress')
+  const bp = $('.batchpress')
   const message = $('.batchpress-message')
-  const nonce = batchPress.find('.batchpress-form').data('nonce')
+  const nonce = bp.find('.batchpress-form').data('nonce')
 
-  batchPress.on('submit', '.batchpress-form', start)
-  batchPress.on('click', '.batchpress-stop', stop)
+  // Events
+  bp.on('submit', '.batchpress-form', start)
+  bp.on('click', '.batchpress-stop', stop)
+  bp.on('click', '.batchpress-back', back)
 
   // Make the ajax request
-  function process(process = 'process') {
-    ajax = $.post(ajaxurl, { action: 'batchpress', nonce, process })
+  function process(process) {
+    ajax = $.post(ajaxurl, { action: 'batchpress', job, nonce, process })
       .done(done)
       .fail(failed)
   }
@@ -19,8 +22,11 @@
   function start(e) {
     e.preventDefault()
 
+    job = bp.find('input[name=job]:checked').val()
+
     process('start')
-    batchPress.addClass('batchpress-processing')
+    bp.addClass('batchpress-processing')
+    message.html(`<small>${job}</small> ${message.data('message')}`)
   }
 
   // Stop and clear queue
@@ -31,7 +37,7 @@
       console.error(`Abort: ${error}`);
     } finally {
       process('stop')
-      batchPress.removeClass('batchpress-processing')
+      bp.removeClass('batchpress-processing')
     }
   }
 
@@ -41,19 +47,24 @@
     status(data)
 
     if (data.status === 'processing') {
-      return process()
+      return process('run')
     }
   }
 
   // Handle ajax failed event
   function failed(data) {
     status($.parseJSON(data))
-    batchPress.addClass('batchpress-error')
+    bp.addClass('batchpress-error')
   }
 
   // Update the on page status
   function status(data) {
-    message.html(data.message)
-    batchPress.addClass('batchpress-' + data.status)
+    message.html(`<small>${job}</small> ${data.message}`)
+    bp.addClass('batchpress-' + data.status)
+  }
+
+  // Go back to start screen
+  function back() {
+    bp.removeClass('batchpress-done batchpress-error batchpress-processing')
   }
 })(jQuery)
