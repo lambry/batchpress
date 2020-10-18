@@ -69,10 +69,11 @@ class Updater {
    */
   public function run() : bool {
     $items = get_option($this->option);
-
     $batch = array_splice($items, 0, $this->batch);
 
-    $this->{"process{$this->method}"}($batch);
+    foreach($batch as $item) {
+      $this->{"process{$this->method}"}($item);
+    }
 
     update_option($this->option, $items);
 
@@ -94,7 +95,7 @@ class Updater {
   /**
    * Get items to import.
    */
-  public function processImport() : void {
+  public function processImport($item) : void {
     // Actually import items here
   }
 
@@ -109,7 +110,7 @@ class Updater {
   /**
    * Get items to import.
    */
-  public function processUpdate() : void {
+  public function processUpdate($item) : void {
     // Actually update items here
   }
 
