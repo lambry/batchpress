@@ -11,7 +11,7 @@ namespace Lambry\BatchPress;
 if (!defined('ABSPATH')) exit;
 
 class Updater {
-  private $job;
+  private $jobs;
   private $method;
   private $option;
   private $batch = 10;
@@ -20,6 +20,8 @@ class Updater {
    * Add actions.
    */
   function __construct() {
+    $this->jobs = new Jobs();
+
     add_action('wp_ajax_batchpress', [$this, 'process']);
   }
 
@@ -31,11 +33,11 @@ class Updater {
       $this->response('error', 'This seems fishy');
     }
 
-    $this->job = sanitize_text_field($_POST['job']);
-    $this->method = implode(array_map(fn($s) => ucfirst($s), explode('-', $this->job)));
-    $this->option = 'batchpress-' . $this->job;
-
+    $job = sanitize_text_field($_POST['job']);
     $process = sanitize_text_field($_POST['process']);
+
+    $this->option = "batchpress-{$job}";
+    $this->method = implode(array_map(fn($s) => ucfirst($s), explode('-', $job)));
 
     $this->$process();
   }
@@ -43,11 +45,11 @@ class Updater {
   /**
    * Run any setup before starting the process for the first time.
    */
-  public function start() {
+  private function start() {
     $items = get_option($this->option);
 
     if (! $items) {
-      $items = $this->{"get{$this->method}"}();
+      $items = $this->jobs->{"get{$this->method}"}();
     }
 
     update_option($this->option, $items);
@@ -58,7 +60,7 @@ class Updater {
   /**
    * Run any teardown when stopping the process.
    */
-  public function stop() {
+  private function stop() {
     update_option($this->option, []);
 
     $this->response('stop', __('Processing...', 'batchpress'));
@@ -67,12 +69,12 @@ class Updater {
   /**
    * Run the actual batch operation.
    */
-  public function run() : bool {
+  private function run() : bool {
     $items = get_option($this->option);
     $batch = array_splice($items, 0, $this->batch);
 
     foreach($batch as $item) {
-      $this->{"process{$this->method}"}($item);
+      $this->jobs->{"process{$this->method}"}($item);
     }
 
     update_option($this->option, $items);
@@ -85,46 +87,16 @@ class Updater {
   }
 
   /**
-   * Get items to import.
-   */
-  public function getImport() : array {
-    // Actually get data here
-    return array_fill(0, 50, true);
-  }
-
-  /**
-   * Get items to import.
-   */
-  public function processImport($item) : void {
-    // Actually import items here
-  }
-
-  /**
-   * Get items to import.
-   */
-  public function getUpdate() : array {
-    // Actually get data here
-    return array_fill(0, 100, true);
-  }
-
-  /**
-   * Get items to import.
-   */
-  public function processUpdate($item) : void {
-    // Actually update items here
-  }
-
-  /**
    * Check action validity.
    */
-  public function isInvalid() : bool {
+  private function isInvalid() : bool {
     return $_POST['action'] !== 'batchpress' || ! check_ajax_referer('batchpress', 'nonce', false);
   }
 
   /**
    * Return response data.
    */
-  public function response(string $status, string $message) {
+  private function response(string $status, string $message) {
     echo json_encode([
       'status' => $status,
       'message' => $message

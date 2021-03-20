@@ -10,18 +10,18 @@ namespace Lambry\BatchPress;
 
 if (!defined('ABSPATH')) exit;
 
-class Setup {
+class Plugin {
   private $page;
   private $updater;
 
   /**
-   * Set vars, and add actions.
+   * Set vars and add actions.
    */
   public function __construct() {
+    $this->updater = new Updater();
+
     add_action('admin_menu', [$this, 'menu']);
     add_action('admin_enqueue_scripts', [$this, 'assets']);
-
-    $this->updater = new Updater();
   }
 
   /**
@@ -44,12 +44,9 @@ class Setup {
   /**
    * Register page and contents.
    */
-  public function page() { ?>
-    <div class="wrap batchpress">
-      <?php
-        require_once BATCHPRESS_INCLUDES . 'views/start.php';
-        require_once BATCHPRESS_INCLUDES . 'views/process.php';
-      ?>
-    </div>
-  <?php }
+  public function page() {
+    $jobs = Jobs::$list;
+
+    require_once BATCHPRESS_INCLUDES . 'view.php';
+  }
 }
