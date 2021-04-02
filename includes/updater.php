@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The main updater page and functions.
+ * The main class for processing jobs.
  *
  * @package BatchPress
  */
@@ -14,13 +14,12 @@ class Updater {
   private $jobs;
   private $method;
   private $option;
-  private $batch = 10;
 
   /**
    * Add actions.
    */
-  function __construct() {
-    $this->jobs = new Jobs();
+  function __construct(Jobs $jobs) {
+    $this->jobs = $jobs;
 
     add_action('wp_ajax_batchpress', [$this, 'process']);
   }
@@ -71,7 +70,7 @@ class Updater {
    */
   private function run() : bool {
     $items = get_option($this->option);
-    $batch = array_splice($items, 0, $this->batch);
+    $batch = array_splice($items, 0, $this->jobs->batch);
 
     foreach($batch as $item) {
       $this->jobs->{"process{$this->method}"}($item);

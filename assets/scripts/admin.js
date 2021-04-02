@@ -1,5 +1,5 @@
 /* Run updater */
-;(function($) {
+(function($) {
   let job = null
   let ajax = null
   const bp = $('.batchpress')
@@ -7,9 +7,15 @@
   const nonce = bp.find('.batchpress-form').data('nonce')
 
   // Events
+  bp.on('click', '.batchpress-option', ready)
   bp.on('submit', '.batchpress-form', start)
   bp.on('click', '.batchpress-stop', stop)
   bp.on('click', '.batchpress-back', back)
+
+  // Start and setup queue
+  function ready() {
+    bp.find('.batchpress-button').attr('disabled', false)
+  }
 
   // Make the ajax request
   function process(process) {
@@ -34,16 +40,17 @@
     try {
       ajax.abort()
     } catch (error) {
-      console.error(`Abort: ${error}`);
+      console.error(`Abort: ${error}`)
     } finally {
       process('stop')
-      bp.removeClass('batchpress-processing')
+      bp.removeClass('batchpress-processing batchpress-error')
     }
   }
 
   // Handle ajax done event
   function done(data) {
-    data = $.parseJSON(data)
+    data = parse(data)
+
     status(data)
 
     if (data.status === 'processing') {
@@ -53,7 +60,7 @@
 
   // Handle ajax failed event
   function failed(data) {
-    status($.parseJSON(data))
+    status(parse(data))
     bp.addClass('batchpress-error')
   }
 
@@ -66,5 +73,14 @@
   // Go back to start screen
   function back() {
     bp.removeClass('batchpress-done batchpress-error batchpress-processing')
+  }
+
+  // Parse JSON response
+  function parse(data) {
+    try {
+      return $.parseJSON(data)
+    } catch (error) {
+      return { status: 'error', message: error }
+    }
   }
 })(jQuery)

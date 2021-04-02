@@ -9,12 +9,12 @@
     <ul>
       <?php foreach($jobs as $name => $description) : ?>
         <li>
-          <label><input type="radio" name="job" value="<?= $name; ?>" checked="checked"> <?= $description; ?></label>
+          <label><input type="radio" name="job" value="<?= $name; ?>" class="batchpress-option"> <?= $description; ?></label>
         </li>
       <?php endforeach; ?>
     </ul>
 
-    <button type="submit" class="batchpress-button button button-primary button-large">
+    <button type="submit" class="batchpress-button button button-primary button-large" disabled>
       <?php _e('Start', 'batchpress'); ?>
     </button>
   </form>
