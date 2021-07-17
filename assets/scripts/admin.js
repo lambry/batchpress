@@ -4,6 +4,7 @@
   let ajax = null
   const bp = $('.batchpress')
   const message = $('.batchpress-message')
+  const log = $('.batchpress-log ul')
   const nonce = bp.find('.batchpress-form').data('nonce')
 
   // Events
@@ -43,6 +44,7 @@
       console.error(`Abort: ${error}`)
     } finally {
       process('stop')
+      log.empty()
       bp.removeClass('batchpress-processing batchpress-error')
     }
   }
@@ -66,12 +68,14 @@
 
   // Update the on page status
   function status(data) {
+    log.append(data.log.map(entry => `<li>${entry}</li>`))
     message.html(`<small>${job}</small> ${data.message}`)
     bp.addClass('batchpress-' + data.status)
   }
 
   // Go back to start screen
   function back() {
+    log.empty()
     bp.removeClass('batchpress-done batchpress-error batchpress-processing')
   }
 

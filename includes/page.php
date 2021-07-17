@@ -6,7 +6,7 @@
   <form class="batchpress-form" data-nonce="<?= wp_create_nonce('batchpress'); ?>">
     <h4><?php _e('Choose process to run', 'batchpress'); ?></h4>
 
-    <ul>
+    <ul class="batchpress-jobs">
       <?php foreach($jobs as $name => $description) : ?>
         <li>
           <label><input type="radio" name="job" value="<?= $name; ?>" class="batchpress-option"> <?= $description; ?></label>
@@ -21,13 +21,19 @@
 
   <div class="batchpress-process">
     <div class="batchpress-message" data-message="<?php _e('Processing...', 'batchpress'); ?>"></div>
+    <div class="batchpress-log">
+      <h4 class="batchpress-log-heading"><?php _e('Process log', 'batchpress'); ?></h4>
+      <ul></ul>
+    </div>
 
-    <button type="button" class="batchpress-stop button button-secondary">
-      <?php _e('Stop processing', 'batchpress'); ?>
-    </button>
+    <div class="batchpress-actions">
+      <button type="button" class="batchpress-stop button button-secondary">
+        <?php _e('Stop processing', 'batchpress'); ?>
+      </button>
 
-    <button type="button" class="batchpress-back button button-secondary">
-      <?php _e('Go back', 'batchpress'); ?>
-    </button>
+      <button type="button" class="batchpress-back button button-secondary">
+        <?php _e('Go back', 'batchpress'); ?>
+      </button>
+    </div>
   </div>
 </div>
