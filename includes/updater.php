@@ -12,8 +12,8 @@ if (!defined('ABSPATH')) exit;
 
 class Updater {
   private $jobs;
-  private $job;
-  private $log;
+  private $option;
+  private $errors;
   private $method;
 
   /**
@@ -36,8 +36,8 @@ class Updater {
     $job = sanitize_text_field($_POST['job']);
     $process = sanitize_text_field($_POST['process']);
 
-    $this->job = "batchpress-{$job}";
-    $this->log = "batchpress-{$job}-log";
+    $this->option = "batchpress-{$job}";
+    $this->errors = "batchpress-{$job}-errors";
     $this->method = implode(array_map(fn($s) => ucfirst($s), explode('-', $job)));
 
     $this->$process();
@@ -47,26 +47,26 @@ class Updater {
    * Run any setup before starting the process for the first time.
    */
   private function start() {
-    $items = get_option($this->job, []);
-    $log = get_option($this->log, []);
+    $items = get_option($this->option, []);
+    $errors = get_option($this->errors, []);
 
     if (! $items) {
-      $log = [];
+      $errors = [];
       $items = $this->jobs->{"get{$this->method}"}();
     }
 
-    update_option($this->job, $items);
-    update_option($this->log, $log);
+    update_option($this->option, $items);
+    update_option($this->errors, $errors);
 
-    $this->response('processing', sprintf(_n('%d item remaining', '%d items remaining', count($items), 'batchpress'), count($items)), $log);
+    $this->response('processing', sprintf(_n('%d item remaining', '%d items remaining', count($items), 'batchpress'), count($items)), $errors);
   }
 
   /**
    * Run any teardown when stopping the process.
    */
   private function stop() {
-    update_option($this->job, []);
-    update_option($this->log, []);
+    update_option($this->option, []);
+    update_option($this->errors, []);
 
     $this->response('stop', __('Processing...', 'batchpress'));
   }
@@ -75,26 +75,24 @@ class Updater {
    * Run the actual batch operation.
    */
   private function run() : bool {
-    $items = get_option($this->job, []);
+    $items = get_option($this->option, []);
     $batch = array_splice($items, 0, $this->jobs->batch);
 
-    $processed = array_filter(array_map(function($item) {
+    $errors = array_values(array_filter(array_map(function($item) {
       return $this->jobs->{"process{$this->method}"}($item) ?: null;
-    }, $batch));
+    }, $batch)));
 
-    update_option($this->job, $items);
+    update_option($this->option, $items);
 
-    if ($processed) {
-      $log = get_option($this->log, []);
-
-      update_option($this->log, array_merge($log, $processed));
+    if ($errors) {
+      update_option($this->errors, array_merge(get_option($this->errors, []), $errors));
     }
 
     if (! $items) {
-      $this->response('done', __('Finished processing!'), $processed);
+      $this->response('done', __('Finished processing!'), $errors);
     }
 
-    $this->response('processing', sprintf(_n('%d item remaining', '%d items remaining', count($items), 'batchpress'), count($items)), $processed);
+    $this->response('processing', sprintf(_n('%d item remaining', '%d items remaining', count($items), 'batchpress'), count($items)), $errors);
   }
 
   /**
@@ -107,11 +105,11 @@ class Updater {
   /**
    * Return response data.
    */
-  private function response(string $status, string $message, array $log = []) {
+  private function response(string $status, string $message, array $errors = []) {
     echo json_encode([
       'status' => $status,
       'message' => $message,
-      'log' => $log
+      'errors' => $errors
     ]);
 
     die();

@@ -5,6 +5,7 @@ $red: #ff5d34;
 $black: #4c4f52;
 $silver: #f1f1f1;
 $white: #fafafa;
+$radius: 3px;
 $breakpoint: 961px;
 
 /* Main Styles */
@@ -44,10 +45,11 @@ $breakpoint: 961px;
     text-align: center;
     line-height: 1.2;
     border-radius: 50%;
-    box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.05), 0 0 20px 20px rgba(0, 0, 0, 0.05), 0 0 30px 30px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.05),
+      0 0 20px 20px rgba(0, 0, 0, 0.05), 0 0 30px 30px rgba(0, 0, 0, 0.05);
 
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       top: -8px;
       left: -8px;
@@ -62,11 +64,11 @@ $breakpoint: 961px;
 
     small {
       display: block;
-      font-size: 0.575rem;
+      font-size: 0.75rem;
       background: $silver;
       padding: 1px 3px;
       margin-bottom: 3px;
-      border-radius: 3px;
+      border-radius: $radius;
       text-transform: capitalize;
     }
   }
@@ -76,14 +78,15 @@ $breakpoint: 961px;
     justify-content: center;
   }
 
-  &-log {
+  &-errors {
+    position: relative;
     background-color: $white;
-    border-radius: 3px;
+    border-radius: $radius;
     margin: 0;
     overflow-y: auto;
     height: 275px;
     width: 100%;
-    max-width: 35rem;
+    max-width: 25rem;
     box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.05);
 
     @media (min-width: $breakpoint) {
@@ -95,8 +98,51 @@ $breakpoint: 961px;
       padding: 0.75rem 1rem;
       border-bottom: 1px solid $silver;
       background-color: $white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       position: sticky;
       top: 0;
+    }
+
+    &-count {
+      background: $red;
+      padding: 2px 4px;
+      border-radius: $radius;
+      color: $white;
+      font-size: 0.75rem;
+      line-height: 1.25;
+    }
+
+    ul:empty {
+      position: absolute;
+      top: calc(50% - 18px);
+      left: calc(50% - 16px);
+      width: 32px;
+      height: 38px;
+      border: 2px solid $silver;
+      box-shadow: inset 0 -2px 0 0 $silver;
+      border-radius: 3px;
+
+      &::after,
+      &::before {
+        content: "";
+        display: block;
+        position: absolute;
+        height: 10px;
+        width: 12px;
+        background-color: $silver;
+        border-radius: $radius;
+        bottom: -2px;
+      }
+
+      &::before {
+        left: -2px;
+      }
+
+      &::after {
+        right: -2px;
+      }
     }
 
     li {

@@ -21,8 +21,8 @@
 
   <div class="batchpress-process">
     <div class="batchpress-message" data-message="<?php _e('Processing...', 'batchpress'); ?>"></div>
-    <div class="batchpress-log">
-      <h4 class="batchpress-log-heading"><?php _e('Process log', 'batchpress'); ?></h4>
+    <div class="batchpress-errors">
+      <h4 class="batchpress-errors-heading"><?php _e('Errors', 'batchpress'); ?> <span class="batchpress-errors-count">0</span></h4>
       <ul></ul>
     </div>
 

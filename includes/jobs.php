@@ -28,8 +28,8 @@ class Jobs {
    * Get items to import.
    */
   public function processImport($item) {
-    // Actually import items here
-    return "Item {$item} successfully imported";
+    // Actually import items here and return any errors
+    return rand(0, 10) >= 9 ? "Item {$item} failed to import." : null;
   }
 
   /**
@@ -44,7 +44,7 @@ class Jobs {
    * Get items to update.
    */
   public function processUpdate($item) {
-    // Actually import items here
-    return "Item {$item} successfully updated";
+    // Actually update items here and return any errors
+    return rand(0, 10) >= 9 ? "Item {$item} failed to update." : null;
   }
 }
