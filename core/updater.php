@@ -2,24 +2,24 @@
 
 /**
  * The main class for processing jobs.
- *
- * @package BatchPress
  */
 
-namespace Lambry\BatchPress;
+namespace Lambry\BatchPress\Core;
 
 if (!defined('ABSPATH')) exit;
 
 class Updater {
+  use Helpers;
+
+  private $job;
   private $jobs;
   private $option;
   private $errors;
-  private $method;
 
   /**
    * Add actions.
    */
-  function __construct(Jobs $jobs) {
+  function __construct(array $jobs) {
     $this->jobs = $jobs;
 
     add_action('wp_ajax_batchpress', [$this, 'process']);
@@ -36,11 +36,36 @@ class Updater {
     $job = sanitize_text_field($_POST['job']);
     $process = sanitize_text_field($_POST['process']);
 
+    $this->job = $this->jobs[$job];
     $this->option = "batchpress-{$job}";
     $this->errors = "batchpress-{$job}-errors";
-    $this->method = implode(array_map(fn($s) => ucfirst($s), explode('-', $job)));
 
     $this->$process();
+  }
+
+  /**
+   * Get file ready before starting, or continue previous import.
+   */
+  private function upload() {
+    $file = $_FILES['file'] ?? null;
+    $items = get_option($this->option, []);
+    $errors = get_option($this->errors, []);
+
+    if ($items) {
+      $this->response('processing', sprintf(_n('%d item processing', '%d items processing', count($items),  'batchpress'), count($items)), $errors);
+    }
+
+    if (! $file) {
+      $this->response('error', 'Please select a file');
+    }
+
+    $data = $this->parseFile($file);
+    $items = $this->job->items($data);
+
+    update_option($this->errors, []);
+    update_option($this->option, $items);
+
+    $this->response('processing', sprintf(_n('%d item pending', '%d items pending', count($items), 'batchpress'), count($items)));
   }
 
   /**
@@ -52,7 +77,7 @@ class Updater {
 
     if (! $items) {
       $errors = [];
-      $items = $this->jobs->{"get{$this->method}"}();
+      $items = $this->job->items();
     }
 
     update_option($this->option, $items);
@@ -76,10 +101,10 @@ class Updater {
    */
   private function run() : bool {
     $items = get_option($this->option, []);
-    $batch = array_splice($items, 0, $this->jobs->batch);
+    $batch = array_splice($items, 0, $this->job->batch ?? 10);
 
     $errors = array_values(array_filter(array_map(function($item) {
-      return $this->jobs->{"process{$this->method}"}($item) ?: null;
+      return $this->job->process($item) ?: null;
     }, $batch)));
 
     update_option($this->option, $items);

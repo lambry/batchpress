@@ -1,26 +1,34 @@
-<div class="wrap batchpress">
+<div class="wrap batchpress" data-nonce="<?= wp_create_nonce('batchpress'); ?>">
   <h1 class="batchpress-heading">
     <?php _e('BatchPress', 'batchpress'); ?>
   </h1>
 
-  <form class="batchpress-form" data-nonce="<?= wp_create_nonce('batchpress'); ?>">
-    <h4><?php _e('Choose process to run', 'batchpress'); ?></h4>
+  <form class="batchpress-form" enctype="multipart/form-data">
+    <h4><?php _e('Choose process', 'batchpress'); ?></h4>
 
     <ul class="batchpress-jobs">
-      <?php foreach($jobs as $name => $description) : ?>
+      <?php foreach($this->jobs as $name => $job) : ?>
         <li>
-          <label><input type="radio" name="job" value="<?= $name; ?>" class="batchpress-option"> <?= $description; ?></label>
+          <label><input type="radio" name="job" value="<?= $name; ?>" class="batchpress-option" data-upload="<?= $job->upload ?? 0; ?>"> <?= $job->label; ?></label>
         </li>
       <?php endforeach; ?>
     </ul>
 
+    <label class="batchpress-upload">
+      <?php _e('Select CSV file', 'batchpress'); ?>
+      <input type="file" name="file" class="batchpress-file" accept=".csv">
+    </label>
+
     <button type="submit" class="batchpress-button button button-primary button-large" disabled>
-      <?php _e('Start', 'batchpress'); ?>
+      <?php _e('Run', 'batchpress'); ?>
     </button>
   </form>
 
   <div class="batchpress-process">
-    <div class="batchpress-message" data-message="<?php _e('Processing...', 'batchpress'); ?>"></div>
+    <div class="batchpress-message" data-message="<?php _e('Processing...', 'batchpress'); ?>">
+      <small class="batchpress-message-job"></small>
+      <h4 class="batchpress-message-status"></h4>
+    </div>
     <div class="batchpress-errors">
       <h4 class="batchpress-errors-heading"><?php _e('Errors', 'batchpress'); ?> <span class="batchpress-errors-count">0</span></h4>
       <ul></ul>

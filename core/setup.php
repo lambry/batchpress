@@ -2,11 +2,9 @@
 
 /**
  * Handle setting up the plugins assets, page etc.
- *
- * @package BatchPress
  */
 
-namespace Lambry\BatchPress;
+namespace Lambry\BatchPress\Core;
 
 if (!defined('ABSPATH')) exit;
 
@@ -19,11 +17,30 @@ class Setup {
    * Set vars and add actions.
    */
   public function __construct() {
-    $this->jobs = new Jobs();
+    $this->jobs = $this->jobs();
     $this->updater = new Updater($this->jobs);
 
     add_action('admin_menu', [$this, 'menu']);
     add_action('admin_enqueue_scripts', [$this, 'assets']);
+  }
+
+  /**
+   * Get all jobs.
+   */
+  public function jobs() {
+    $jobs = [];
+
+    foreach (glob(BATCHPRESS_JOBS . '*.php') as $file) {
+      require_once $file;
+
+      $name = basename($file, '.php');
+      $class = str_replace('-', '', ucwords($name, '-'));
+      $instance = '\Lambry\BatchPress\Jobs\\' . $class;
+
+      $jobs[$name] = new $instance();
+    }
+
+    return $jobs;
   }
 
   /**
@@ -47,8 +64,6 @@ class Setup {
    * Register page and contents.
    */
   public function page() {
-    $jobs = $this->jobs->list;
-
-    require_once BATCHPRESS_INCLUDES . 'page.php';
+    require_once BATCHPRESS_CORE . 'page.php';
   }
 }

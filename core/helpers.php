@@ -1,16 +1,27 @@
 <?php
 
 /**
- * Helpers for generic batch tasks.
- *
- * @package BatchPress
+ * Helpers for generic tasks.
  */
 
-namespace Lambry\BatchPress;
+namespace Lambry\BatchPress\Core;
 
 if (!defined('ABSPATH')) exit;
 
 trait Helpers {
+  /**
+   * Helper to a parse a file.
+   */
+  private function parseFile($file) {
+    $data = file_get_contents($file['tmp_name']);
+    $rows = explode(PHP_EOL, $data);
+    $headers = str_getcsv(array_shift($rows));
+
+    return array_map(function($row) use($headers) {
+      return array_combine($headers, str_getcsv($row));
+    }, $rows);
+  }
+
   /**
    * Helper to upload an image.
    */
