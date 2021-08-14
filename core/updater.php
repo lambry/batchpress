@@ -59,8 +59,11 @@ class Updater {
       $this->response('error', 'Please select a file');
     }
 
-    $data = $this->parseFile($file);
-    $items = $this->job->items($data);
+    $items = $this->parseFile($file);
+
+    if (method_exists($this->job, 'items')) {
+      $items = $this->job->items($items);
+    }
 
     update_option($this->errors, []);
     update_option($this->option, $items);

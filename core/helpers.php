@@ -13,24 +13,40 @@ trait Helpers {
    * Helper to a parse a file.
    */
   private function parseFile($file) {
-    $data = file_get_contents($file['tmp_name']);
-    $rows = explode(PHP_EOL, $data);
-    $headers = str_getcsv(array_shift($rows));
+    $rows = [];
+    $file = fopen($file['tmp_name'], 'r');
 
-    return array_map(function($row) use($headers) {
-      return array_combine($headers, str_getcsv($row));
-    }, $rows);
+    while (($row = fgetcsv($file)) !== false) $rows[] = $row;
+
+    $headers = array_map('sanitize_text_field', array_map('sanitize_title_with_dashes', array_shift($rows)));
+
+    return array_map(fn($row) => array_combine($headers, $row), $rows);
+  }
+
+  /**
+   * Helper to prepare/check an upload.
+   */
+  private function prepareUpload($url, $title) {
+    $this->includeMediaHandling();
+
+    $name = $title ? $title : basename($url);
+
+    $file = get_page_by_title($name, OBJECT, 'attachment');
+
+    $upload = $file ? $file->ID : (bool) filter_var(esc_url($url), FILTER_VALIDATE_URL);
+
+    return [$upload, $name];
   }
 
   /**
    * Helper to upload an image.
    */
-  private function uploadImage($url, $id) {
-    if (! filter_var(esc_url($url), FILTER_VALIDATE_URL)) return null;
+  private function uploadImage($url, $id, $title = null) {
+    [$upload, $name] = $this->prepareUpload($url, $title);
 
-    $this->includeMediaHandling();
+    if ($upload !== true) return $upload;
 
-    $image_id = media_sideload_image($url, $id, basename($url), 'id');
+    $image_id = media_sideload_image($url, $id, $name, 'id');
 
     return !is_wp_error($image_id) ? $image_id : null;
   }
@@ -38,15 +54,12 @@ trait Helpers {
   /**
    * Helper to upload a file.
    */
-  private function uploadFile($url, $id) {
-    if (! filter_var($url, FILTER_VALIDATE_URL)) return null;
+  private function uploadFile($url, $id, $title = null) {
+    [$upload, $name] = $this->prepareUpload($url, $title);
 
-    $this->includeMediaHandling();
+    if ($upload !== true) return $upload;
 
-    $file = [
-      'name' => basename($url),
-      'tmp_name' => download_url($url)
-    ];
+    $file = [ 'name' => $name, 'tmp_name' => download_url($url) ];
 
     $file_id = media_handle_sideload($file, $id);
 
