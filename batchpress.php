@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Plugin Name: BatchPress
  * Plugin URI: https://github.com/lambry/batchpress
  * Description: A starter plugin to help process data in batches.
- * Version: 0.3.0
+ * Version: 0.4.0
  * Author: Lambry
  * Author URI: https://lambry.com/
  */
@@ -12,15 +13,44 @@ namespace Lambry\BatchPress;
 
 if (!defined('ABSPATH')) exit;
 
-define('BATCHPRESS_VERSION', '0.3.0');
+define('BATCHPRESS_VERSION', '0.4.0');
 define('BATCHPRESS_ASSETS', plugin_dir_url(__FILE__) . 'assets/');
-define('BATCHPRESS_CORE', plugin_dir_path(__FILE__) . 'core/');
-define('BATCHPRESS_JOBS', plugin_dir_path(__FILE__) . 'jobs/');
+define('BATCHPRESS_INCLUDES', plugin_dir_path(__FILE__) . 'includes/');
 
-require_once BATCHPRESS_CORE . 'helpers.php';
-require_once BATCHPRESS_CORE . 'updater.php';
-require_once BATCHPRESS_CORE . 'setup.php';
+class Init
+{
+  /**
+   * Add actions.
+   */
+  public function __construct()
+  {
+    if (is_admin()) {
+      $this->includes();
 
-add_action('plugins_loaded', function() {
-  if (is_admin()) new Core\Setup();
-});
+      add_action('plugins_loaded', fn () => new Core\Setup());
+      add_filter('plugin_action_links_' . plugin_basename(__FILE__), [$this, 'links']);
+    }
+  }
+
+  /**
+   * Required files.
+   */
+  public function includes()
+  {
+    require_once BATCHPRESS_INCLUDES . 'helpers.php';
+    require_once BATCHPRESS_INCLUDES . 'updater.php';
+    require_once BATCHPRESS_INCLUDES . 'setup.php';
+  }
+
+  /**
+   * Add action links to plugins page
+   */
+  public function links(array $links): array
+  {
+    return array_merge([
+      '<a href="' . admin_url('tools.php?page=batchpress') . '">' . __('Dashboard', 'batchpress') . '</a>',
+    ], $links);
+  }
+}
+
+new Init();

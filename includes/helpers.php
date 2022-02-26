@@ -8,11 +8,13 @@ namespace Lambry\BatchPress\Core;
 
 if (!defined('ABSPATH')) exit;
 
-trait Helpers {
+trait Helpers
+{
   /**
    * Helper to a parse a file.
    */
-  private function parseFile($file) {
+  private function parseFile($file)
+  {
     $rows = [];
     $file = fopen($file['tmp_name'], 'r');
 
@@ -20,13 +22,14 @@ trait Helpers {
 
     $headers = array_map('sanitize_text_field', array_map('sanitize_title_with_dashes', array_shift($rows)));
 
-    return array_map(fn($row) => array_combine($headers, $row), $rows);
+    return array_map(fn ($row) => array_combine($headers, $row), $rows);
   }
 
   /**
    * Helper to prepare/check an upload.
    */
-  private function prepareUpload($url, $title) {
+  private function prepareUpload($url, $title)
+  {
     $this->includeMediaHandling();
 
     $name = $title ? $title : basename($url);
@@ -41,7 +44,8 @@ trait Helpers {
   /**
    * Helper to upload an image.
    */
-  private function uploadImage($url, $id, $title = null) {
+  private function uploadImage($url, $id, $title = null)
+  {
     [$upload, $name] = $this->prepareUpload($url, $title);
 
     if ($upload !== true) return $upload;
@@ -54,12 +58,13 @@ trait Helpers {
   /**
    * Helper to upload a file.
    */
-  private function uploadFile($url, $id, $title = null) {
+  private function uploadFile($url, $id, $title = null)
+  {
     [$upload, $name] = $this->prepareUpload($url, $title);
 
     if ($upload !== true) return $upload;
 
-    $file = [ 'name' => $name, 'tmp_name' => download_url($url) ];
+    $file = ['name' => $name, 'tmp_name' => download_url($url)];
 
     $file_id = media_handle_sideload($file, $id);
 
@@ -69,7 +74,8 @@ trait Helpers {
   /**
    * Include needed files for upload helpers.
    */
-  private function includeMediaHandling() : void {
+  private function includeMediaHandling(): void
+  {
     require_once ABSPATH . 'wp-admin/includes/media.php';
     require_once ABSPATH . 'wp-admin/includes/file.php';
     require_once ABSPATH . 'wp-admin/includes/image.php';

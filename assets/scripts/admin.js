@@ -5,7 +5,7 @@
   const bp = $('.batchpress')
   const upload = $('.batchpress-upload')
   const message = $('.batchpress-message')
-  const errors = $('.batchpress-errors')
+  const log = $('.batchpress-log')
   const nonce = bp.data('nonce')
 
   // Events
@@ -56,7 +56,7 @@
     }
 
     bp.addClass('batchpress-processing')
-    message.find('.batchpress-message-job').html(form.get('job').replace('-', ' '))
+    message.find('.batchpress-message-job').html(option.data('title') || form.get('job').replaceAll('-', ' '))
     message.find('.batchpress-message-status').html(message.data('message'))
   }
 
@@ -90,25 +90,23 @@
     bp.addClass('batchpress-error')
   }
 
-  // Update the on page status
+  // Update the on page status and log
   function status(data) {
     message.find('.batchpress-message-status').html(data.message)
     bp.addClass('batchpress-' + data.status)
-    log(data.errors)
-  }
 
-  // Update the error log
-  function log(log) {
-    const count = Number(errors.find('.batchpress-errors-count').html())
+    if (data.log) {
+      const count = Number(log.find('.batchpress-log-count').html())
 
-    errors.find('ul').append(log.map(entry => `<li>${entry}</li>`))
-    errors.find('.batchpress-errors-count').html(count + log.length)
+      log.find('ul').append(log.map(entry => `<li>${entry}</li>`))
+      log.find('.batchpress-log-count').html(count + log.length)
+    }
   }
 
   // Clear logs
   function clear() {
-    errors.find('ul').empty()
-    errors.find('.batchpress-errors-count').html(0)
+    log.find('ul').empty()
+    log.find('.batchpress-log-count').html(0)
   }
 
   // Go back to start screen

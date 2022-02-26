@@ -1,0 +1,27 @@
+{
+	"name": "lambry/batchpress",
+	"description": "WordPress plugin to help process data in batches.",
+	"homepage": "https://github.com/lambry/batchpress",
+	"license": "GPL-2.0-or-later",
+	"type": "wordpress-plugin",
+	"authors": [
+		{
+			"name": "David Featherston",
+			"homepage": "https://lambry.com"
+		}
+	],
+	"keywords": [
+		"wordpress",
+		"plugin"
+	],
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://wpackagist.org"
+		}
+	],
+	"require": {
+		"php": ">=7.4",
+		"composer/installers": "~1.0"
+	}
+}

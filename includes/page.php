@@ -9,7 +9,7 @@
     <ul class="batchpress-jobs">
       <?php foreach($this->jobs as $name => $job) : ?>
         <li>
-          <label><input type="radio" name="job" value="<?= $name; ?>" class="batchpress-option" data-upload="<?= $job->upload ?? 0; ?>"> <?= $job->label; ?></label>
+          <label><input type="radio" name="job" value="<?= $name; ?>" class="batchpress-option" data-title="<?= $job->title ?? ''; ?>" data-upload="<?= $job->upload ?? 0; ?>"> <?= $job->label; ?></label>
         </li>
       <?php endforeach; ?>
     </ul>
@@ -29,8 +29,8 @@
       <small class="batchpress-message-job"></small>
       <h4 class="batchpress-message-status"></h4>
     </div>
-    <div class="batchpress-errors">
-      <h4 class="batchpress-errors-heading"><?php _e('Errors', 'batchpress'); ?> <span class="batchpress-errors-count">0</span></h4>
+    <div class="batchpress-log">
+      <h4 class="batchpress-log-heading"><?php _e('Log', 'batchpress'); ?> <span class="batchpress-log-count">0</span></h4>
       <ul></ul>
     </div>
 

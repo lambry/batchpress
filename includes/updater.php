@@ -8,7 +8,8 @@ namespace Lambry\BatchPress\Core;
 
 if (!defined('ABSPATH')) exit;
 
-class Updater {
+class Updater
+{
   use Helpers;
 
   private $job;
@@ -19,7 +20,8 @@ class Updater {
   /**
    * Add actions.
    */
-  function __construct(array $jobs) {
+  function __construct(array $jobs)
+  {
     $this->jobs = $jobs;
 
     add_action('wp_ajax_batchpress', [$this, 'process']);
@@ -28,7 +30,8 @@ class Updater {
   /**
    * Run the main updater process.
    */
-  public function process() {
+  public function process()
+  {
     if ($this->isInvalid()) {
       $this->response('error', 'This seems fishy');
     }
@@ -46,7 +49,8 @@ class Updater {
   /**
    * Get file ready before starting, or continue previous import.
    */
-  private function upload() {
+  private function upload()
+  {
     $file = $_FILES['file'] ?? null;
     $items = get_option($this->option, []);
     $errors = get_option($this->errors, []);
@@ -55,7 +59,7 @@ class Updater {
       $this->response('processing', sprintf(_n('%d item processing', '%d items processing', count($items),  'batchpress'), count($items)), $errors);
     }
 
-    if (! $file) {
+    if (!$file) {
       $this->response('error', 'Please select a file');
     }
 
@@ -74,11 +78,12 @@ class Updater {
   /**
    * Run any setup before starting the process for the first time.
    */
-  private function start() {
+  private function start()
+  {
     $items = get_option($this->option, []);
     $errors = get_option($this->errors, []);
 
-    if (! $items) {
+    if (!$items) {
       $errors = [];
       $items = $this->job->items();
     }
@@ -92,7 +97,8 @@ class Updater {
   /**
    * Run any teardown when stopping the process.
    */
-  private function stop() {
+  private function stop()
+  {
     update_option($this->option, []);
     update_option($this->errors, []);
 
@@ -102,11 +108,12 @@ class Updater {
   /**
    * Run the actual batch operation.
    */
-  private function run() : bool {
+  private function run(): bool
+  {
     $items = get_option($this->option, []);
     $batch = array_splice($items, 0, $this->job->batch ?? 10);
 
-    $errors = array_values(array_filter(array_map(function($item) {
+    $errors = array_values(array_filter(array_map(function ($item) {
       return $this->job->process($item) ?: null;
     }, $batch)));
 
@@ -116,7 +123,7 @@ class Updater {
       update_option($this->errors, array_merge(get_option($this->errors, []), $errors));
     }
 
-    if (! $items) {
+    if (!$items) {
       $this->response('done', __('Finished processing!'), $errors);
     }
 
@@ -126,14 +133,16 @@ class Updater {
   /**
    * Check action validity.
    */
-  private function isInvalid() : bool {
-    return $_POST['action'] !== 'batchpress' || ! check_ajax_referer('batchpress', 'nonce', false);
+  private function isInvalid(): bool
+  {
+    return $_POST['action'] !== 'batchpress' || !check_ajax_referer('batchpress', 'nonce', false);
   }
 
   /**
    * Return response data.
    */
-  private function response(string $status, string $message, array $errors = []) {
+  private function response(string $status, string $message, array $errors = [])
+  {
     echo json_encode([
       'status' => $status,
       'message' => $message,

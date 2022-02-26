@@ -17,9 +17,10 @@ Thumbs.db
 .project
 .settings
 
-# Folders to ignore
+# Folders and file to ignore
 node_modules
 cache
 .sass-cache
 .codekit-cache
 config.codekit3
+sample.csv

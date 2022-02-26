@@ -7,6 +7,7 @@ $silver: #f1f1f1;
 $white: #fafafa;
 $radius: 3px;
 $breakpoint: 961px;
+$size: clamp(10rem, 40vmin, 22.5rem);
 
 /* Main Styles */
 .batchpress {
@@ -28,9 +29,10 @@ $breakpoint: 961px;
     place-items: center;
     grid-template-columns: 1fr;
     gap: 2.5rem;
-    margin: 2.5rem;
+    margin: 2.5rem 1.25rem;
 
     @media (min-width: $breakpoint) {
+      margin: 2.5rem;
       gap: 2.5rem 5rem;
       grid-template-columns: auto 1fr;
     }
@@ -42,16 +44,15 @@ $breakpoint: 961px;
     justify-content: center;
     align-items: center;
     position: relative;
-    height: 250px;
-    width: 250px;
+    height: $size;
+    width: $size;
     font-size: 1.25rem;
     background-color: $white;
     padding: 2.5rem;
     text-align: center;
     line-height: 1.2;
     border-radius: 50%;
-    box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.05),
-      0 0 20px 20px rgba(0, 0, 0, 0.05), 0 0 30px 30px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.05), 0 0 20px 20px rgba(0, 0, 0, 0.05), 0 0 30px 30px rgba(0, 0, 0, 0.05);
 
     &::before {
       content: "";
@@ -86,15 +87,15 @@ $breakpoint: 961px;
     justify-content: center;
   }
 
-  &-errors {
+  &-log {
     position: relative;
     background-color: $white;
     border-radius: $radius;
     margin: 0;
     overflow-y: auto;
-    height: 275px;
+    height: $size;
     width: 100%;
-    max-width: 25rem;
+    max-width: 40rem;
     box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.05);
 
     @media (min-width: $breakpoint) {
@@ -114,7 +115,7 @@ $breakpoint: 961px;
     }
 
     &-count {
-      background: $red;
+      background: $blue;
       padding: 2px 4px;
       border-radius: $radius;
       color: $white;
