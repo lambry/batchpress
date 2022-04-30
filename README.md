@@ -2,6 +2,8 @@
 
 BatchPress is a little plugin to help process data in batches, with BatchPress you can run, monitor and cancel batched jobs.
 
+Install: `composer require lambry/batchpress`
+
 ![screenshot](screenshot.png)
 
 ## Usage
