@@ -14,13 +14,12 @@
 Thumbs.db
 .cache
 .vscode
+.idea
 .project
 .settings
 
 # Folders and file to ignore
+.sass-cache
 node_modules
 cache
-.sass-cache
-.codekit-cache
-config.codekit3
 sample.csv

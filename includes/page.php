@@ -4,12 +4,18 @@
   </h1>
 
   <form class="batchpress-form" enctype="multipart/form-data">
-    <h4><?php _e('Choose process', 'batchpress'); ?></h4>
+    <p><?php _e('Choose a job to run below', 'batchpress'); ?></p>
 
     <ul class="batchpress-jobs">
       <?php foreach($this->jobs as $name => $job) : ?>
         <li>
-          <label><input type="radio" name="job" value="<?= $name; ?>" class="batchpress-option" data-title="<?= $job->title ?? ''; ?>" data-upload="<?= $job->upload ?? 0; ?>"> <?= $job->label; ?></label>
+          <label class="batchpress-jobs-job">
+            <input type="radio" name="job" value="<?= $name; ?>" class="batchpress-option" data-title="<?= $job->title ?? ''; ?>" data-upload="<?= $job->upload ?? 0; ?>">
+            <h3 class="batchpress-jobs-title"><?= $job->title ?? $job->label; ?></h3>
+            <?php if (property_exists($job, 'title')) : ?>
+              <p class="batchpress-jobs-label"><?= $job->label; ?></p>
+            <?php endif; ?>
+          </label>
         </li>
       <?php endforeach; ?>
     </ul>

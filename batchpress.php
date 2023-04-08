@@ -13,7 +13,7 @@ namespace Lambry\BatchPress;
 
 if (!defined('ABSPATH')) exit;
 
-define('BATCHPRESS_VERSION', '0.4.0');
+define('BATCHPRESS_VERSION', '0.4.1');
 define('BATCHPRESS_ASSETS', plugin_dir_url(__FILE__) . 'assets/');
 define('BATCHPRESS_INCLUDES', plugin_dir_path(__FILE__) . 'includes/');
 

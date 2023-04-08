@@ -95,11 +95,11 @@
     message.find('.batchpress-message-status').html(data.message)
     bp.addClass('batchpress-' + data.status)
 
-    if (data.log) {
+    if (data.errors) {
       const count = Number(log.find('.batchpress-log-count').html())
 
-      log.find('ul').append(log.map(entry => `<li>${entry}</li>`))
-      log.find('.batchpress-log-count').html(count + log.length)
+      log.find('ul').append(data.errors.map(error => `<li>${error}</li>`))
+      log.find('.batchpress-log-count').html(count + data.errors.length)
     }
   }
 

@@ -3,11 +3,13 @@ $blue: #009efd;
 $green: #2af598;
 $red: #ff5d34;
 $black: #4c4f52;
+$grey: #6e7073;
 $silver: #f1f1f1;
 $white: #fafafa;
 $radius: 3px;
 $breakpoint: 961px;
 $size: clamp(10rem, 40vmin, 22.5rem);
+$shadow: 0 0 5px 2px rgba(0, 0, 0, 0.025);
 
 /* Main Styles */
 .batchpress {
@@ -15,8 +17,44 @@ $size: clamp(10rem, 40vmin, 22.5rem);
     transition: all 0.25s ease;
   }
 
+  &-option[type=radio] {
+    margin: 0.05rem 0.5rem 0 0;
+  }
+
   &-jobs {
     margin-bottom: 2rem;
+
+    &-job {
+      display: grid;
+      grid-template-columns: 25px 1fr;
+      width: 25rem;
+      max-width: 100%;
+      padding: 1.5rem 1.25rem;
+      margin-top: 1.5rem;
+      background-color: $white;
+      border: 2px solid $white;
+      border-radius: $radius;
+      box-shadow: $shadow;
+
+      &:has(input:checked) {
+        border-color: $blue;
+      }
+    }
+
+    &-title {
+      margin: 0;
+      font-weight: normal;
+    }
+
+    &-label {
+      margin: 0.5rem 0 0;
+      color: $grey;
+    }
+
+    &-title,
+    &-label {
+      grid-column-start: 2;
+    }
   }
 
   &-upload {
@@ -96,7 +134,7 @@ $size: clamp(10rem, 40vmin, 22.5rem);
     height: $size;
     width: 100%;
     max-width: 40rem;
-    box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: $shadow;
 
     @media (min-width: $breakpoint) {
       justify-self: start;
@@ -165,13 +203,18 @@ $size: clamp(10rem, 40vmin, 22.5rem);
   }
 
   &-processing {
-    .batchpress-form,
     .batchpress-back {
       display: none;
     }
 
+    .batchpress-form {
+      position: absolute;
+      animation: fadeOut 0.25s ease both;
+    }
+
     .batchpress-process {
       display: grid;
+      animation: fadeIn 0.5s 0.125s ease both;
     }
   }
 
@@ -207,5 +250,26 @@ $size: clamp(10rem, 40vmin, 22.5rem);
 
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
   }
 }
