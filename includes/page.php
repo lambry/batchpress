@@ -10,10 +10,10 @@
       <?php foreach($this->jobs as $name => $job) : ?>
         <li>
           <label class="batchpress-jobs-job">
-            <input type="radio" name="job" value="<?= $name; ?>" class="batchpress-option" data-title="<?= $job->title ?? ''; ?>" data-upload="<?= $job->upload ?? 0; ?>">
-            <h3 class="batchpress-jobs-title"><?= $job->title ?? $job->label; ?></h3>
-            <?php if (property_exists($job, 'title')) : ?>
-              <p class="batchpress-jobs-label"><?= $job->label; ?></p>
+            <input type="radio" name="job" value="<?= $name; ?>" class="batchpress-option" data-label="<?= $job->label ?? ''; ?>" data-upload="<?= $job->upload ?? 0; ?>">
+            <h3 class="batchpress-jobs-label"><?= $job->label; ?></h3>
+            <?php if (property_exists($job, 'description')) : ?>
+              <p class="batchpress-jobs-description"><?= $job->description; ?></p>
             <?php endif; ?>
           </label>
         </li>

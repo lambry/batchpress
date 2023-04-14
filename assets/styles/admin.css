@@ -24,15 +24,15 @@
 .batchpress-jobs-job:has(input:checked) {
   border-color: #009efd;
 }
-.batchpress-jobs-title {
+.batchpress-jobs-label {
   margin: 0;
   font-weight: normal;
 }
-.batchpress-jobs-label {
+.batchpress-jobs-description {
   margin: 0.5rem 0 0;
   color: #6e7073;
 }
-.batchpress-jobs-title, .batchpress-jobs-label {
+.batchpress-jobs-label, .batchpress-jobs-description {
   grid-column-start: 2;
 }
 .batchpress-upload {
@@ -84,9 +84,9 @@
 }
 .batchpress-message-job {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   background: #f1f1f1;
-  padding: 1px 3px;
+  padding: 2px 5px;
   border-radius: 3px;
   text-transform: capitalize;
 }

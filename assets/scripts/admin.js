@@ -56,7 +56,7 @@
     }
 
     bp.addClass('batchpress-processing')
-    message.find('.batchpress-message-job').html(option.data('title') || form.get('job').replaceAll('-', ' '))
+    message.find('.batchpress-message-job').html(option.data('label') || form.get('job').replaceAll('-', ' '))
     message.find('.batchpress-message-status').html(message.data('message'))
   }
 
@@ -95,11 +95,11 @@
     message.find('.batchpress-message-status').html(data.message)
     bp.addClass('batchpress-' + data.status)
 
-    if (data.errors) {
+    if (data.log) {
       const count = Number(log.find('.batchpress-log-count').html())
 
-      log.find('ul').append(data.errors.map(error => `<li>${error}</li>`))
-      log.find('.batchpress-log-count').html(count + data.errors.length)
+      log.find('ul').append(data.log.map(entry => `<li>${entry}</li>`))
+      log.find('.batchpress-log-count').html(count + data.log.length)
     }
   }
 

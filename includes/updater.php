@@ -4,7 +4,7 @@
  * The main class for processing jobs.
  */
 
-namespace Lambry\BatchPress\Core;
+namespace Lambry\BatchPress;
 
 if (!defined('ABSPATH')) exit;
 
@@ -13,9 +13,9 @@ class Updater
   use Helpers;
 
   private $job;
-  private $jobs;
-  private $option;
-  private $errors;
+  private array $jobs;
+  private string $option;
+  private string $log;
 
   /**
    * Add actions.
@@ -30,7 +30,7 @@ class Updater
   /**
    * Run the main updater process.
    */
-  public function process()
+  public function process() : void
   {
     if ($this->isInvalid()) {
       $this->response('error', 'This seems fishy');
@@ -41,7 +41,7 @@ class Updater
 
     $this->job = $this->jobs[$job];
     $this->option = "batchpress-{$job}";
-    $this->errors = "batchpress-{$job}-errors";
+    $this->log = "batchpress-{$job}-log";
 
     $this->$process();
   }
@@ -49,14 +49,14 @@ class Updater
   /**
    * Get file ready before starting, or continue previous import.
    */
-  private function upload()
+  private function upload() : void
   {
     $file = $_FILES['file'] ?? null;
     $items = get_option($this->option, []);
-    $errors = get_option($this->errors, []);
+    $log = get_option($this->log, []);
 
     if ($items) {
-      $this->response('processing', sprintf(_n('%d item processing', '%d items processing', count($items),  'batchpress'), count($items)), $errors);
+      $this->response('processing', sprintf(_n('%d item processing', '%d items processing', count($items),  'batchpress'), count($items)), $log);
     }
 
     if (!$file) {
@@ -69,7 +69,7 @@ class Updater
       $items = $this->job->items($items);
     }
 
-    update_option($this->errors, []);
+    update_option($this->log, []);
     update_option($this->option, $items);
 
     $this->response('processing', sprintf(_n('%d item pending', '%d items pending', count($items), 'batchpress'), count($items)));
@@ -78,29 +78,29 @@ class Updater
   /**
    * Run any setup before starting the process for the first time.
    */
-  private function start()
+  private function start() : void
   {
     $items = get_option($this->option, []);
-    $errors = get_option($this->errors, []);
+    $log = get_option($this->log, []);
 
     if (!$items) {
-      $errors = [];
+      $log = [];
       $items = $this->job->items();
     }
 
     update_option($this->option, $items);
-    update_option($this->errors, $errors);
+    update_option($this->log, $log);
 
-    $this->response('processing', sprintf(_n('%d item remaining', '%d items remaining', count($items), 'batchpress'), count($items)), $errors);
+    $this->response('processing', sprintf(_n('%d item remaining', '%d items remaining', count($items), 'batchpress'), count($items)), $log);
   }
 
   /**
    * Run any teardown when stopping the process.
    */
-  private function stop()
+  private function stop() : void
   {
     update_option($this->option, []);
-    update_option($this->errors, []);
+    update_option($this->log, []);
 
     $this->response('stop', __('Processing...', 'batchpress'));
   }
@@ -108,26 +108,25 @@ class Updater
   /**
    * Run the actual batch operation.
    */
-  private function run(): bool
+  private function run(): void
   {
     $items = get_option($this->option, []);
     $batch = array_splice($items, 0, $this->job->batch ?? 10);
 
-    $errors = array_values(array_filter(array_map(function ($item) {
-      return $this->job->process($item) ?: null;
-    }, $batch)));
+    // Process each item in the batch and return any log messages
+    $log = array_values(array_filter(array_map(fn ($item) => $this->job->process($item) ?: null, $batch)));
 
     update_option($this->option, $items);
 
-    if ($errors) {
-      update_option($this->errors, array_merge(get_option($this->errors, []), $errors));
+    if ($log) {
+      update_option($this->log, array_merge(get_option($this->log, []), $log));
     }
 
     if (!$items) {
-      $this->response('done', __('Finished processing!'), $errors);
+      $this->response('done', __('Finished processing!'), $log);
     }
 
-    $this->response('processing', sprintf(_n('%d item remaining', '%d items remaining', count($items), 'batchpress'), count($items)), $errors);
+    $this->response('processing', sprintf(_n('%d item remaining', '%d items remaining', count($items), 'batchpress'), count($items)), $log);
   }
 
   /**
@@ -141,12 +140,12 @@ class Updater
   /**
    * Return response data.
    */
-  private function response(string $status, string $message, array $errors = [])
+  private function response(string $status, string $message, array $log = [])
   {
     echo json_encode([
       'status' => $status,
       'message' => $message,
-      'errors' => $errors
+      'log' => $log
     ]);
 
     die();

@@ -4,14 +4,15 @@
  * Handle setting up the plugins assets, page etc.
  */
 
-namespace Lambry\BatchPress\Core;
+namespace Lambry\BatchPress;
 
 if (!defined('ABSPATH')) exit;
 
 class Setup
 {
-  private $page;
-  private $jobs;
+  private string $page;
+  private array $jobs;
+  private Updater $updater;
 
   /**
    * Set vars and add actions.
@@ -26,7 +27,7 @@ class Setup
   /**
    * Adds the appropriate menu type.
    */
-  public function menu()
+  public function menu() : void
   {
     $this->page = add_management_page('BatchPress', 'BatchPress', 'manage_options', 'batchpress', [$this, 'page']);
   }
@@ -34,7 +35,7 @@ class Setup
   /**
    * Register page and contents.
    */
-  public function page()
+  public function page() : void
   {
     require_once BATCHPRESS_INCLUDES . 'page.php';
   }
@@ -43,7 +44,7 @@ class Setup
   /**
    * Include the needed assets.
    */
-  public function assets($hook)
+  public function assets(string $hook) : void
   {
     if ($this->page !== $hook) return;
 
@@ -54,7 +55,7 @@ class Setup
   /**
    * Get all jobs.
    */
-  public function jobs()
+  public function jobs() : void
   {
     $jobs = [];
     $registered = apply_filters('batchpress/jobs', []);
@@ -65,7 +66,5 @@ class Setup
 
     $this->jobs = $jobs;
     $this->updater = new Updater($this->jobs);
-
-    return $jobs;
   }
 }

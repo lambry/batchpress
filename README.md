@@ -17,7 +17,7 @@ Job class outline:
 - Optional|Required: `items` method is optional if the upload property is set to true, in this case it can be used to filter the uploaded content before staring the job. If upload if false or not defined the method is then required to return an array of items for processing.
 - Optional: `upload` property to tell BatchPress if a CSV upload is required.
 - Optional: `batch` property to set the number of items to process per batch.
-- Optional: `title` property to override the default title displayed for the job.
+- Optional: `description` property to provide extra details about the job.
 
 ## Basic Example
 
@@ -54,4 +54,23 @@ class Import {
 
 ```php
 add_filter('batchpress/jobs', fn() => [Update::class, Import::class]);
+```
+
+## Helpers
+
+BatchPress provides some helper methods as well, to use them just include the `Helpers` trait in your job class.
+
+```php
+use Lambry\BatchPress\Helpers;
+
+class Update {
+  use Helpers;
+
+  public function process($item) : mixed {
+    // Adding an image to a post
+    $id = this->uploadImage($item['url'], $item['id'], $item['title']);
+    // Adding a file to a post
+    $id = this->uploadFile($item['url'], $item['id'], $item['title']);
+  }
+}
 ```

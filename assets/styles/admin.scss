@@ -41,18 +41,18 @@ $shadow: 0 0 5px 2px rgba(0, 0, 0, 0.025);
       }
     }
 
-    &-title {
+    &-label {
       margin: 0;
       font-weight: normal;
     }
 
-    &-label {
+    &-description {
       margin: 0.5rem 0 0;
       color: $grey;
     }
 
-    &-title,
-    &-label {
+    &-label,
+    &-description {
       grid-column-start: 2;
     }
   }
@@ -108,9 +108,9 @@ $shadow: 0 0 5px 2px rgba(0, 0, 0, 0.025);
 
     &-job {
       display: block;
-      font-size: 0.75rem;
+      font-size: 0.9rem;
       background: $silver;
-      padding: 1px 3px;
+      padding: 2px 5px;
       border-radius: $radius;
       text-transform: capitalize;
     }

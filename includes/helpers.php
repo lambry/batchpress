@@ -4,7 +4,7 @@
  * Helpers for generic tasks.
  */
 
-namespace Lambry\BatchPress\Core;
+namespace Lambry\BatchPress;
 
 if (!defined('ABSPATH')) exit;
 
@@ -13,7 +13,7 @@ trait Helpers
   /**
    * Helper to a parse a file.
    */
-  private function parseFile($file)
+  private function parseFile($file) : array
   {
     $rows = [];
     $file = fopen($file['tmp_name'], 'r');
@@ -28,11 +28,11 @@ trait Helpers
   /**
    * Helper to prepare/check an upload.
    */
-  private function prepareUpload($url, $title)
+  private function prepareUpload(string $url, string $title) : array
   {
     $this->includeMediaHandling();
 
-    $name = $title ? $title : basename($url);
+    $name = $title ?: basename($url);
 
     $file = get_page_by_title($name, OBJECT, 'attachment');
 
@@ -44,7 +44,7 @@ trait Helpers
   /**
    * Helper to upload an image.
    */
-  private function uploadImage($url, $id, $title = null)
+  private function uploadImage(string $url, int $id, string $title = null) : ?int
   {
     [$upload, $name] = $this->prepareUpload($url, $title);
 
@@ -58,7 +58,7 @@ trait Helpers
   /**
    * Helper to upload a file.
    */
-  private function uploadFile($url, $id, $title = null)
+  private function uploadFile(string $url, int $id, string $title = null) : ?int
   {
     [$upload, $name] = $this->prepareUpload($url, $title);
 
